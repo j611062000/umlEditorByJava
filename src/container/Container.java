@@ -1,7 +1,6 @@
 package container;
 
 import java.awt.Color;
-import java.util.Vector;
 
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -10,24 +9,28 @@ import configuration.Configuration;
 
 public class Container extends JPanel{
 
-    private Integer xShiftOnFrame;
+    public final Integer          INNER_PADDING = Configuration.PADDING;
     public final Integer X_START_POINT_OF_FRAME = Configuration.PADDING;
     public final Integer Y_START_POINT_OF_FRAME = Configuration.PADDING;
-    public final Integer INNER_PADDING = Configuration.PADDING;
+    
+    public Integer xLength;
+    public Integer xShiftOnFrame = 0;
 
-    protected Integer padding = Configuration.PADDING;
+    protected Integer yLength;
 
-    protected void initChildComponents() {
-    }
+    protected void initChildComponents() {}
+    
+    protected void setXYLength() {}
 
     protected void setInitStyle(Integer xLength, Integer yLength) {
         this.setVisible(true);
         this.setLayout(null);
-        this.setBounds(X_START_POINT_OF_FRAME + xShiftOnFrame, Y_START_POINT_OF_FRAME, xLength, yLength);
+        this.setBounds(X_START_POINT_OF_FRAME + xShiftOnFrame, Y_START_POINT_OF_FRAME,xLength, yLength);
         this.setBorder(new LineBorder(Color.BLACK));
+        this.setBackground(Color.white);
     }
 
-    public void setxShiftOnFrame(Integer xShiftOnFrame) {
-        this.xShiftOnFrame = xShiftOnFrame;
+    public void setInitStyle() {
+        this.setInitStyle(xLength, yLength);
     }
 }

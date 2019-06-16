@@ -1,23 +1,28 @@
 package container;
 
-import java.util.Vector;
+import java.awt.event.MouseAdapter;
 
-import javax.swing.JPanel;
+import configuration.Configuration;
+import listener.CanvasListener;
 
 public class CanvasContainer extends Container{
     
-    // public CanvasContainer() {
-        
-    //     Vector<Integer> argsForBounds = new Vector<Integer>();
-        
-    //     argsForBounds.add(padding);
-    //     argsForBounds.add(padding);
-    //     argsForBounds.add(2*padding+lengthOfButton);
-    //     argsForBounds.add((numberOfButtons+1)*padding + numberOfButtons*lengthOfButton);
+    public CanvasContainer() {
+        this.setXYLength();        
+        this.setInitStyle(this.xLength, this.yLength);
+        this.initChildComponents();
+        this.setListener(new CanvasListener());
+        this.setLayout(null);
+    }
 
-    //     this.setInitStyle(argsForBounds);
-    //     this.initChildComponents();
-    // }
+    @Override
+    protected void setXYLength() {
+        this.xLength = Configuration.DIMENSION_OF_CANVAS.width;
+        this.yLength = Configuration.DIMENSION_OF_CANVAS.height;
+    }
 
-    
+    private void setListener(MouseAdapter listener) {
+        this.addMouseListener(listener);
+        this.addMouseMotionListener(listener);
+    }
 }
