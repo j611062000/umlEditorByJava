@@ -130,6 +130,9 @@ public class SelectMode extends BasicMode {
         // Exception will occur when click on a non-shape object
         if (CanvasContainerHandler.isMouseActionOnShape(mouseEvent)) {
             Shape clickedShape = (Shape) mouseEvent.getSource();
+            System.out.println(clickedShape.getClickedPistionInShape(mouseEvent.getPoint()));
+            System.out.println(mouseEvent.getPoint());
+
     
             this.unHighlightAllShapes();
             if (!isThisShapeInAGroup(clickedShape)) {
@@ -152,7 +155,6 @@ public class SelectMode extends BasicMode {
 
         if (CanvasContainerHandler.isMouseActionOnShape(mouseEvent)) {
             Vector<Shape> clickedShapes = this.getClickedShapes(mouseEvent);
-            // Shape clickedShape = (Shape) mouseEvent.getComponent();
             
             int xCoordOfDragPointInShape = mouseEvent.getX();
             int yCoordOfDragPointInShape = mouseEvent.getY();
