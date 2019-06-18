@@ -11,6 +11,7 @@ import handler.CanvasContainerHandler;
 
 /**
  * Select
+ * TODO: There is a bug when grouping
  */
 public class SelectMode extends BasicMode {
     
@@ -21,7 +22,18 @@ public class SelectMode extends BasicMode {
     private boolean isLatestClickOnShape = false;
     
     private boolean isThisShapeInAGroup (Shape shape) {
-        if (shape.getGroupIndex().size() > 0) {
+        if (!shape.getGroupIndex().isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isInSameGroup(Shape s1, Shape s2) {
+        assert !s1.getGroupIndex().isEmpty(): "s1 is not in a group";
+        assert !s2.getGroupIndex().isEmpty(): "s2 is not in a group";
+
+        if (s1.getGroupIndex().lastElement() == s2.getGroupIndex().lastElement()) {
             return true;
         } else {
             return false;
@@ -39,17 +51,20 @@ public class SelectMode extends BasicMode {
     private void highlightClickedShape(Shape clickedShape) {
         for (Shape shape : CanvasContainerHandler.shapes) {
             if (clickedShape.equals(shape)) {
-                CanvasContainerHandler.setComponentToMostTop(shape);
+                CanvasContainerHandler.setShapeToMostTop(shape);
                 shape.performActionWhenClicked();
             }
         }
     }
+
     
     private void highlightClickedGroup(Shape clickedShape) {
         for (Shape shape : CanvasContainerHandler.shapes) {
-            if (clickedShape.getGroupIndex().lastElement() == shape.getGroupIndex().lastElement()) {
-                CanvasContainerHandler.setComponentToMostTop(shape);
-                shape.performActionWhenClicked();
+            if (this.isThisShapeInAGroup(shape)) {
+                if (this.isInSameGroup(clickedShape, shape)) {
+                    CanvasContainerHandler.setShapeToMostTop(shape);
+                    shape.performActionWhenClicked();
+                }
             }
         }
     }
@@ -64,23 +79,19 @@ public class SelectMode extends BasicMode {
         this.latestClickedPointInShape = p;
     }
 
-    private boolean isLeftUpAndRightDownRelation(Point p1, Point p2) {
-        // p1 is at left-up corner, and p2 is at right-bottom corner
-        if ((p1.x <= p2.x) && (p1.y<=p2.y)) {
-            return true;
-        }
+   
 
-        return false;
-    }
-
-    private boolean isShapeInRange(Shape s, Point clickedPoint, Point releasedPoint) {
+    private boolean isShapeInRangeOfTwoPoints(Shape s, Point clickedPoint, Point releasedPoint) {
         
         Point leftUpPointOfSelectedArea    = new Point(Math.min(clickedPoint.x, releasedPoint.x),Math.min(clickedPoint.y, releasedPoint.y));
         Point rightDownPointOfSelectedArea = new Point(Math.max(clickedPoint.x, releasedPoint.x),Math.max(clickedPoint.y, releasedPoint.y));
-        Point leftUpPointOfShaepe = s.getLocation();
+        Point leftUpPointOfShaepe   = s.getLocation();
         Point rightDownPointOfShape = new Point(leftUpPointOfShaepe.x+(int)s.dimensionOfSize.getWidth(), leftUpPointOfShaepe.y+(int)s.dimensionOfSize.getHeight());
         
-        if (this.isLeftUpAndRightDownRelation(leftUpPointOfSelectedArea, leftUpPointOfShaepe) && this.isLeftUpAndRightDownRelation(rightDownPointOfShape, rightDownPointOfSelectedArea)) {
+        boolean isLeftUpCornerOfShapeInArea = CanvasContainerHandler.isLeftUpAndRightDownRelation(leftUpPointOfSelectedArea, leftUpPointOfShaepe);
+        boolean isRightDownCornerOfShapeInArea = CanvasContainerHandler.isLeftUpAndRightDownRelation(rightDownPointOfShape, rightDownPointOfSelectedArea);
+        
+        if (isLeftUpCornerOfShapeInArea && isRightDownCornerOfShapeInArea) {
             return true;
         }else {
             return false;
@@ -91,7 +102,7 @@ public class SelectMode extends BasicMode {
 
         Integer newGroupIndex = Configuration.FIRST_NEW_GROUP_INDEX;
         
-        if (this.existingGroups.size() > 0) {
+        if (!this.existingGroups.isEmpty()) {
             newGroupIndex = this.existingGroups.lastElement() + 1;
         }
 
@@ -108,10 +119,11 @@ public class SelectMode extends BasicMode {
         Vector<Shape> clickedShapes = new Vector<Shape>();
         clickedShapes.add(clickedShape);
         
-        if (clickedShape.getGroupIndex().size() > 0) {
+        // clicked shape is in a group
+        if (this.isThisShapeInAGroup(clickedShape)) {
             for (Shape s : CanvasContainerHandler.shapes) {
-                if (s.getGroupIndex().lastElement() == clickedShape.getGroupIndex().lastElement()) {
-                    if (s!=clickedShape) {
+                if (this.isThisShapeInAGroup(s) && (s!=clickedShape)) {
+                    if (this.isInSameGroup(s, clickedShape)) {
                         clickedShapes.add(s);
                     }
                 }
@@ -123,17 +135,16 @@ public class SelectMode extends BasicMode {
 
     @Override
     // Add a new ClassDiagram to Canvas
-    public void performActionOnClick(MouseEvent mouseEvent) {
+    public void performActionOnPressed(MouseEvent mouseEvent) {
 
         this.setlatestClickedPointInShape(mouseEvent.getPoint());
         
         // Exception will occur when click on a non-shape object
         if (CanvasContainerHandler.isMouseActionOnShape(mouseEvent)) {
+            // TODO: remove casting
             Shape clickedShape = (Shape) mouseEvent.getSource();
-            System.out.println(clickedShape.getClickedPistionInShape(mouseEvent.getPoint()));
-            System.out.println(mouseEvent.getPoint());
-
-    
+            this.isLatestClickOnShape = true;
+            
             this.unHighlightAllShapes();
             if (!isThisShapeInAGroup(clickedShape)) {
                 this.highlightClickedShape(clickedShape);
@@ -158,12 +169,10 @@ public class SelectMode extends BasicMode {
             
             int xCoordOfDragPointInShape = mouseEvent.getX();
             int yCoordOfDragPointInShape = mouseEvent.getY();
-            
             int shiftX = xCoordOfDragPointInShape - this.latestClickedPointInShape.x;
             int shiftY = yCoordOfDragPointInShape - this.latestClickedPointInShape.y;
             
             for (Shape s : clickedShapes) {
-
                 int xCoordOfClickedShapeInCanvas = s.getLocation().x;
                 int yCoordOfClickedShapeInCanvas = s.getLocation().y;
                 // move the clicked shape
@@ -173,12 +182,7 @@ public class SelectMode extends BasicMode {
                 for (Shape affiliate : s.affiliates) {
                     affiliate.move(affiliate.getLocation().x + shiftX, affiliate.getLocation().y+shiftY);
                 }
-        
             }
-    
-        }
-        else if (CanvasContainerHandler.isMouseActionOnCanvas(mouseEvent)) {
-
         }
     }
 
@@ -188,7 +192,7 @@ public class SelectMode extends BasicMode {
         if (!this.isLatestClickOnShape) {
             this.selectedShapes.clear();
             for (Shape s : CanvasContainerHandler.shapes) {
-                if (this.isShapeInRange(s, this.latestClickedPointInCanvas, mouseEvent.getPoint())) {
+                if (this.isShapeInRangeOfTwoPoints(s, this.latestClickedPointInCanvas, mouseEvent.getPoint())) {
                     this.highlightClickedShape(s);
                     this.selectedShapes.add(s);
                 }
@@ -197,7 +201,7 @@ public class SelectMode extends BasicMode {
             if (this.selectedShapes.size() >= Configuration.MIN_NUMBER_OF_SHAPES_IN_A_GROUP) {
                 this.makeNewGroup();
             }
-            System.out.println(this.existingGroups);
+            // System.out.println(this.existingGroups);
         }
     }
 }

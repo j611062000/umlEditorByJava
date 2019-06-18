@@ -1,12 +1,10 @@
 package handler;
 
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import javax.swing.JFrame;
 
-import components.Shape;
 import configuration.Configuration;
 import configuration.Configuration.Mode;
 import container.Container;
@@ -41,12 +39,13 @@ public class CoreHandler {
         modes.add(new ClassDiagramMode(Mode.ClassDiagram));
         modes.add(new SelectMode(Mode.Select));
         modes.add(new UseCaseMode(Mode.UseCase));
+        modes.add(new AssociationLineMode(Mode.AssociationLine));
     }
     
-    public static void routeMouseClickedEventToMode(MouseEvent mouseEvent) {
+    public static void routeMousePressedEventToMode(MouseEvent mouseEvent) {
         for (BasicMode m : modes) {
             if (m.getMode() == currentMode) {
-                m.performActionOnClick(mouseEvent);
+                m.performActionOnPressed(mouseEvent);
                 break;
             }
         }

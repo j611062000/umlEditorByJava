@@ -17,6 +17,7 @@ public class Shape extends JPanel{
     public Vector<Shape> affiliates =new Vector<Shape>();
     public enum ClickedPositionInShape {Top, Bottom, Left, Right};
     
+    protected ClickedPositionInShape position;
     private Vector<Integer> groupIndex = new Vector<Integer>();
 
     public Shape(Dimension d) {
@@ -50,6 +51,21 @@ public class Shape extends JPanel{
 
     public Vector<Integer> getGroupIndex() {
         return this.groupIndex;
+    }
+
+    public ClickedPositionInShape getPosition() {
+        return this.position;
+    }
+
+    public Shape getNearestAffiliate(Point clickedPoint) {
+        ClickedPositionInShape clickedPosition = this.getClickedPistionInShape(clickedPoint);
+        for (Shape shape : this.affiliates) {
+            if(shape.getPosition() == clickedPosition) {
+                return shape;
+            }
+        }
+
+        return null;
     }
 
     public ClickedPositionInShape getClickedPistionInShape(Point clickedPoint) {

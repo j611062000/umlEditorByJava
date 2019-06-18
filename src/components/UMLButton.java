@@ -23,7 +23,7 @@ public class UMLButton extends JButton {
 
     public void updateCurrentMode() {
         CoreHandler.updateCurrentMode(this.mode);
-        configuration.Configuration.debugPrint("CurrentMode:", CoreHandler.getCurrentMode());
+        // configuration.Configuration.debugPrint("CurrentMode:", CoreHandler.getCurrentMode());
     }
 
     public void setClickedStyle() {

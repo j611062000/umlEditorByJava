@@ -17,7 +17,7 @@ public class ClassDiagramMode extends BasicMode{
 
     @Override
     // Add a new ClassDiagram to Canvas
-    public void performActionOnClick(MouseEvent mouseEvent) {
+    public void performActionOnPressed(MouseEvent mouseEvent) {
         
         Point p = mouseEvent.getPoint();
 

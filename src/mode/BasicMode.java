@@ -2,17 +2,16 @@ package mode;
 
 import configuration.Configuration.Mode;
 import java.awt.event.MouseEvent;
-import javax.swing.JPanel;
 
-public class BasicMode extends JPanel{
+public class BasicMode{
 	
 	protected Mode mode;
 	
-	protected BasicMode(Mode m) {
+	public BasicMode(Mode m) {
 		this.setMode(m);
 	}
 
-	public void performActionOnClick(MouseEvent mouseEvent) { }
+	public void performActionOnPressed(MouseEvent mouseEvent) { }
 
 	public void performActionOnDrag(MouseEvent mouseEvent) { }
 

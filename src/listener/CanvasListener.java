@@ -9,7 +9,7 @@ public class CanvasListener extends MouseAdapter implements MouseMotionListener{
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-        CoreHandler.routeMouseClickedEventToMode(mouseEvent);
+        CoreHandler.routeMousePressedEventToMode(mouseEvent);
     }
 
     @Override

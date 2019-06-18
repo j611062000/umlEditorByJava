@@ -1,11 +1,8 @@
 package components;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-
 import configuration.Configuration;
 
 /**
@@ -15,12 +12,17 @@ public class Port extends Shape{
 
     private Point locationPoint;
 
-    public Port(Point locationPoint) {
+    public Port(Point locationPoint, ClickedPositionInShape position) {
         super(Configuration.DIMENSION_OF_PORT);
         super.initPanel(locationPoint, dimensionOfSize);
         this.locationPoint = locationPoint;
         this.setInitStyle(Color.BLACK);
+        this.position = position;
     }
+
+    // public ClickedPositionInShape getPosition() {
+    //     return this.position;
+    // }
 
     @Override
 	protected void paintComponent(Graphics g)

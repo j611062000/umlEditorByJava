@@ -2,6 +2,7 @@ package handler;
 
 import container.*;
 
+// TODO: When the current mode is changed, the class diagram shoud be unselected
 public class ButtonContainerHandler {
 
     public static ButtonContainer bc;

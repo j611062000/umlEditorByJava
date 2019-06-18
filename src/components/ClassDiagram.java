@@ -1,10 +1,8 @@
 package components;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import configuration.Configuration;
@@ -40,16 +38,16 @@ public class ClassDiagram extends Shape{
 
     protected void initPorts(Point pointOfCreation) {
 
-        int widthOfRect  = (int) this.dimensionOfSize.getWidth();
-        int heightOfRect = (int) this.dimensionOfSize.getHeight();
-        int shiftOfPort = (int) Configuration.DIMENSION_OF_PORT.getWidth();
-        int shifXOfCanvas = (int) pointOfCreation.getX();
-        int shifYOfCanvas = (int) pointOfCreation.getY();
+        int widthOfRect  = this.dimensionOfSize.width;
+        int heightOfRect = this.dimensionOfSize.height;
+        int shiftOfPort  = Configuration.DIMENSION_OF_PORT.width;
+        int shifXOfCanvas = pointOfCreation.x;
+        int shifYOfCanvas = pointOfCreation.y;
         
-        Port topPort    = new Port(new Point(shifXOfCanvas+widthOfRect/2-shiftOfPort/2, shifYOfCanvas-shiftOfPort));
-        Port bottomPort = new Port(new Point(shifXOfCanvas+widthOfRect/2-shiftOfPort/2, shifYOfCanvas+heightOfRect));
-        Port leftPort   = new Port(new Point(shifXOfCanvas-shiftOfPort, shifYOfCanvas+heightOfRect/2-shiftOfPort/2));
-        Port rightPort  = new Port(new Point(shifXOfCanvas+widthOfRect, shifYOfCanvas+heightOfRect/2-shiftOfPort/2));
+        Port topPort    = new Port(new Point(shifXOfCanvas+widthOfRect/2-shiftOfPort/2, shifYOfCanvas-shiftOfPort), ClickedPositionInShape.Top);
+        Port bottomPort = new Port(new Point(shifXOfCanvas+widthOfRect/2-shiftOfPort/2, shifYOfCanvas+heightOfRect), ClickedPositionInShape.Bottom);
+        Port leftPort   = new Port(new Point(shifXOfCanvas-shiftOfPort, shifYOfCanvas+heightOfRect/2-shiftOfPort/2), ClickedPositionInShape.Left);
+        Port rightPort  = new Port(new Point(shifXOfCanvas+widthOfRect, shifYOfCanvas+heightOfRect/2-shiftOfPort/2), ClickedPositionInShape.Right);
 
         this.ports.add(topPort);
         this.ports.add(bottomPort);
@@ -70,6 +68,17 @@ public class ClassDiagram extends Shape{
         }
     }
 
+    // public Port getNearestPort(Point clickedPoint) {
+    //     ClickedPositionInShape clickedPosition = this.getClickedPistionInShape(clickedPoint);
+    //     for (Port port : this.ports) {
+    //         if(port.getPosition() == clickedPosition) {
+    //             return port;
+    //         }
+    //     }
+
+    //     return null;
+    // }
+
     @Override
     public void performActionWhenClicked() {
         for (Port p : this.ports) {
@@ -83,5 +92,4 @@ public class ClassDiagram extends Shape{
             p.setUnclickedStyle();
         }
     }
-
 }

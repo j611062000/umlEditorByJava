@@ -13,6 +13,7 @@ public class UMLButtonListener extends MouseAdapter{
         // Set the background of all buttons to Color.WHITE
         ButtonContainerHandler.unselectAllButtons();
         // Set the background of the clicked button to Color.BLACK
+        // TODO: remove casting
         ((UMLButton) e.getSource()).setClickedStyle();
         ((UMLButton) e.getSource()).updateCurrentMode();
     }   
