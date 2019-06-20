@@ -31,7 +31,8 @@ public class LineMode extends BasicMode {
     public void performActionOnPressed(MouseEvent mouseEvent) { 
         if(CanvasContainerHandler.isMouseActionOnShape(mouseEvent)){
             this.tailPoint = CanvasContainerHandler.mapCoordInShapeToCanvas(mouseEvent);
-            this.tailShape = (Shape) mouseEvent.getComponent();
+            // this.tailShape = (Shape) mouseEvent.getComponent();
+            this.tailShape = CanvasContainerHandler.getShapeById(mouseEvent.getComponent().getName());
             this.tailPort = this.tailShape.getNearestAffiliate(mouseEvent.getPoint());
         }
     }

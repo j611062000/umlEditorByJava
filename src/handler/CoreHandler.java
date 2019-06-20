@@ -1,5 +1,8 @@
 package handler;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
 
@@ -10,6 +13,8 @@ import configuration.Configuration.Mode;
 import container.Container;
 import container.MainContainer;
 import mode.*;
+import javax.swing.*;  
+
 
 public class CoreHandler {
     
@@ -20,6 +25,24 @@ public class CoreHandler {
     private static Vector<BasicMode> modes = new Vector<BasicMode>();
     
     public static void init() {
+
+        JMenuBar mb=new JMenuBar();  
+
+        JMenu file =  new JMenu("File");
+        JMenu edit =  new JMenu("Edit");
+
+        JMenuItem group = new JMenuItem("Group");  
+        JMenuItem unGroup = new JMenuItem("unGroup");  
+        JMenuItem changeObjName = new JMenuItem("Change Object Name");  
+
+        registerFuncToMenuItem(group,Configuration.MENU_ITME_FUNC_GROUP);
+        registerFuncToMenuItem(unGroup,Configuration.MENU_ITME_FUNC_UNGROUP);
+
+        file.add(group); 
+        file.add(unGroup);
+        edit.add(changeObjName);  
+        mb.add(file);  
+        mb.add(edit);  
         
         ButtonContainerHandler.init();
         CanvasContainerHandler.init();
@@ -31,7 +54,17 @@ public class CoreHandler {
         
         initAllModes();
         
+        // menu bar
+        mc.setJMenuBar(mb);  
         addPanelsToFrame(containers , mc);
+    }
+
+    private static void registerFuncToMenuItem(JMenuItem jmi, String menuItemFunc) {
+        jmi.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                routeMenuItemEventToMode(menuItemFunc);
+            } 
+        });
     }
     
     // Should be appended when this program is extended
@@ -43,6 +76,15 @@ public class CoreHandler {
         modes.add(new CompositionLineMode(Mode.CompositionLine));
         modes.add(new DashLineMode(Mode.DashLine));
         modes.add(new GeneralizationLineMode(Mode.GeneralizationLine));
+    }
+
+    public static void routeMenuItemEventToMode(String menuItemFunc) {
+        for (BasicMode m : modes) {
+            if (m.getMode() == currentMode) {
+                m.performActionOnMenuItem(menuItemFunc);
+                break;
+            }
+        }
     }
     
     public static void routeMousePressedEventToMode(MouseEvent mouseEvent) {
@@ -92,5 +134,4 @@ public class CoreHandler {
             xShiftOnFrame += (c.xLength + Configuration.PADDING);
         }
     }
-
 }

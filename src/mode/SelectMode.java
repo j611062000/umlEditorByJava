@@ -60,14 +60,20 @@ public class SelectMode extends BasicMode {
 
     
     private void highlightClickedGroup(Shape clickedShape) {
+        
+        this.selectedShapes.clear();
+        
         for (Shape shape : CanvasContainerHandler.shapes) {
             if (this.isThisShapeInAGroup(shape)) {
                 if (this.isInSameGroup(clickedShape, shape)) {
                     CanvasContainerHandler.setShapeToMostTop(shape);
                     shape.performActionWhenClicked();
+                    this.selectedShapes.add(shape);
                 }
             }
         }
+
+
     }
 
     private void unHighlightAllShapes() {
@@ -107,6 +113,8 @@ public class SelectMode extends BasicMode {
 
     private void makeNewGroup() {
 
+        assert this.selectedShapes.size() >= Configuration.MIN_NUMBER_OF_SHAPES_IN_A_GROUP;
+
         Integer newGroupIndex = Configuration.FIRST_NEW_GROUP_INDEX;
         
         if (!this.existingGroups.isEmpty()) {
@@ -122,6 +130,8 @@ public class SelectMode extends BasicMode {
 
     private void dissolveAGroup() {
 
+        assert this.selectedShapes.size() >= Configuration.MIN_NUMBER_OF_SHAPES_IN_A_GROUP;
+
         int indexOfRemovedGroup = 0;
 
         if (!this.existingGroups.isEmpty()) {
@@ -136,7 +146,8 @@ public class SelectMode extends BasicMode {
 
     private Vector<Shape> getClickedShapes(MouseEvent mouseEvent) {
         
-        Shape clickedShape = (Shape) mouseEvent.getComponent();
+        // Shape clickedShape = (Shape) mouseEvent.getComponent();
+        Shape clickedShape = CanvasContainerHandler.getShapeById(mouseEvent.getComponent().getName());
         Vector<Shape> clickedShapes = new Vector<Shape>();
         clickedShapes.add(clickedShape);
         
@@ -155,6 +166,16 @@ public class SelectMode extends BasicMode {
     }
 
     @Override
+    public void performActionOnMenuItem(String funcOfMenuItem) {
+        if (funcOfMenuItem == Configuration.MENU_ITME_FUNC_GROUP) {
+            this.makeNewGroup();
+
+        }else if (funcOfMenuItem == Configuration.MENU_ITME_FUNC_UNGROUP) {
+            this.dissolveAGroup();
+        }
+    }
+
+    @Override
     // Add a new ClassDiagram to Canvas
     public void performActionOnPressed(MouseEvent mouseEvent) {
 
@@ -162,8 +183,7 @@ public class SelectMode extends BasicMode {
         
         // Exception will occur when click on a non-shape object
         if (CanvasContainerHandler.isMouseActionOnShape(mouseEvent)) {
-            // TODO: remove casting
-            Shape clickedShape = (Shape) mouseEvent.getSource();
+            Shape clickedShape = CanvasContainerHandler.getShapeById(mouseEvent.getComponent().getName());
             this.isLatestClickOnShape = true;
             
             this.unHighlightAllShapes();
@@ -238,11 +258,6 @@ public class SelectMode extends BasicMode {
                     this.selectedShapes.add(s);
                 }
             }
-
-            if (this.selectedShapes.size() >= Configuration.MIN_NUMBER_OF_SHAPES_IN_A_GROUP) {
-                this.makeNewGroup();
-            }
-            // System.out.println(this.existingGroups);
         }
     }
 }

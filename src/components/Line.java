@@ -108,6 +108,7 @@ public class Line extends JPanel{
         this.isHighlighted = true;
         this.repaint();
     }
+    
     public void setunhighlighted() {
         this.isHighlighted = false;
         this.repaint();

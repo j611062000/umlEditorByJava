@@ -17,6 +17,8 @@ public class BasicMode{
 
 	public void performActionOnRelease(MouseEvent mouseEvent) { }
 
+	public void performActionOnMenuItem(String funcOfMenuItem) { }
+
 	protected void setMode(Mode m) {
 		this.mode = m;
 	}

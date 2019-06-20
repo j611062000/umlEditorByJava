@@ -3,6 +3,7 @@ package components;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.util.Vector;
@@ -53,8 +54,9 @@ public class Shape extends JPanel{
         jlabel.setVisible(true);
         this.add(jlabel);
         // TODO: refactor
-        jlabel.setSize(50, 50);
-        jlabel.setLocation(50, 10);
+        jlabel.setSize(Configuration.DIMENSION_OF_LABEL);
+        jlabel.setFont(Configuration.FONT_FOR_TEXT);
+        jlabel.setLocation(30, 10);
         this.setVisible(true);
     }
     

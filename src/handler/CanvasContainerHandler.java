@@ -42,6 +42,10 @@ public class CanvasContainerHandler {
         shapesByName.put(shape.getName(), shape);
     }
 
+    public static Shape getShapeById(String id) {
+        return shapesByName.get(id);
+    }
+
     public static void setShapeToMostTop(Shape shape) {
         if (!shape.affiliatedShapes.isEmpty()) {
             for (Shape affiliate : shape.affiliatedShapes) {
