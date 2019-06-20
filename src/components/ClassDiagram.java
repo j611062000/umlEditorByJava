@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.util.Vector;
 
 import configuration.Configuration;
+import configuration.Configuration.ClickedPositionInShape;
 import handler.CanvasContainerHandler;
 import listener.ClassDiagramListener;
 
@@ -15,11 +16,11 @@ import listener.ClassDiagramListener;
  */
 public class ClassDiagram extends Shape{
 
-    private Vector<Port> ports        = new Vector<Port>();
-    private int padding               = Configuration.PADDING;
+    private Vector<Port> ports = new Vector<Port>();
+    private int padding        = Configuration.PADDING;
 
     public ClassDiagram(Point pointOfCreation) {
-        super(Configuration.DIMENSION_OF_ClASS_DIAGRAM);
+        super(Configuration.DIMENSION_OF_ClASS_DIAGRAM, "Class");
         super.initPanel(pointOfCreation, dimensionOfSize);
         this.setInitStyle(Color.WHITE);
         this.initPorts(pointOfCreation);
@@ -68,16 +69,6 @@ public class ClassDiagram extends Shape{
         }
     }
 
-    // public Port getNearestPort(Point clickedPoint) {
-    //     ClickedPositionInShape clickedPosition = this.getClickedPistionInShape(clickedPoint);
-    //     for (Port port : this.ports) {
-    //         if(port.getPosition() == clickedPosition) {
-    //             return port;
-    //         }
-    //     }
-
-    //     return null;
-    // }
 
     @Override
     public void performActionWhenClicked() {

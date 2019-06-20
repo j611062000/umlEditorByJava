@@ -40,6 +40,9 @@ public class CoreHandler {
         modes.add(new SelectMode(Mode.Select));
         modes.add(new UseCaseMode(Mode.UseCase));
         modes.add(new AssociationLineMode(Mode.AssociationLine));
+        modes.add(new CompositionLineMode(Mode.CompositionLine));
+        modes.add(new DashLineMode(Mode.DashLine));
+        modes.add(new GeneralizationLineMode(Mode.GeneralizationLine));
     }
     
     public static void routeMousePressedEventToMode(MouseEvent mouseEvent) {

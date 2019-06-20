@@ -1,12 +1,17 @@
 package components;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.util.Vector;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import configuration.Configuration;
+import configuration.Configuration.ClickedPositionInShape;
 
 /**
  * Shape
@@ -14,20 +19,42 @@ import javax.swing.JPanel;
 public class Shape extends JPanel{
 
     public Dimension dimensionOfSize;
-    public Vector<Shape> affiliates =new Vector<Shape>();
-    public enum ClickedPositionInShape {Top, Bottom, Left, Right};
+    public Vector<Shape> affiliatedShapes = new Vector<Shape>();
+    public Vector<Line> affiliatedLines = new Vector<Line>();
     
     protected ClickedPositionInShape position;
-    private Vector<Integer> groupIndex = new Vector<Integer>();
 
-    public Shape(Dimension d) {
+    private Vector<Integer> groupIndex = new Vector<Integer>();
+    private static int id              = Configuration.INIT_ID_OF_SHAPE;
+    private String label;
+
+    public Shape(Dimension d, String label) {
+        this.issueNewId();
         this.dimensionOfSize = d;
+        this.label = label;
+       
     }
     
+    public int getId() {
+        return id;
+    }
+
+    protected void issueNewId() {
+        id += 1;
+        this.setName(String.valueOf(id));
+    }
+
     protected void initPanel(Point location, Dimension dimensionOfSize) {
         this.setSize(dimensionOfSize);
         this.setLayout(null);
         this.setLocation(location);
+        // Label
+        JLabel jlabel = new JLabel(this.label);
+        jlabel.setVisible(true);
+        this.add(jlabel);
+        // TODO: refactor
+        jlabel.setSize(50, 50);
+        jlabel.setLocation(50, 10);
         this.setVisible(true);
     }
     
@@ -42,7 +69,11 @@ public class Shape extends JPanel{
     }
     
     protected void addShapeToAffiliates(Shape s) {
-        this.affiliates.add(s);
+        this.affiliatedShapes.add(s);
+    }
+
+    public void addLineToAffiliates(Line l) {
+        this.affiliatedLines.add(l);
     }
 
     public void performActionWhenClicked() { }
@@ -59,7 +90,7 @@ public class Shape extends JPanel{
 
     public Shape getNearestAffiliate(Point clickedPoint) {
         ClickedPositionInShape clickedPosition = this.getClickedPistionInShape(clickedPoint);
-        for (Shape shape : this.affiliates) {
+        for (Shape shape : this.affiliatedShapes) {
             if(shape.getPosition() == clickedPosition) {
                 return shape;
             }

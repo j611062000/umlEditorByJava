@@ -1,9 +1,15 @@
 package components;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
+
+import javax.swing.JLabel;
+
 import configuration.Configuration;
+import configuration.Configuration.ClickedPositionInShape;
+import listener.PortListener;
 
 /**
  * Port
@@ -13,11 +19,13 @@ public class Port extends Shape{
     private Point locationPoint;
 
     public Port(Point locationPoint, ClickedPositionInShape position) {
-        super(Configuration.DIMENSION_OF_PORT);
+        super(Configuration.DIMENSION_OF_PORT, "");
         super.initPanel(locationPoint, dimensionOfSize);
         this.locationPoint = locationPoint;
         this.setInitStyle(Color.BLACK);
         this.position = position;
+        this.setListener(new PortListener());
+     
     }
 
     // public ClickedPositionInShape getPosition() {
@@ -29,8 +37,8 @@ public class Port extends Shape{
 	{
         super.paintComponent(g);
         g.setColor(Color.BLACK);
-        g.fillRect(this.locationPoint.x, this.locationPoint.y, (int)dimensionOfSize.getWidth(), (int)dimensionOfSize.getHeight());
-        g.drawRect(this.locationPoint.x, this.locationPoint.y, (int)dimensionOfSize.getWidth(), (int)dimensionOfSize.getHeight());
+        g.fillRect(this.locationPoint.x, this.locationPoint.y, dimensionOfSize.width, dimensionOfSize.height);
+        g.drawRect(this.locationPoint.x, this.locationPoint.y, dimensionOfSize.width, dimensionOfSize.height);
     }
 
     @Override
@@ -46,4 +54,5 @@ public class Port extends Shape{
     public void setUnclickedStyle() {
         this.setVisible(false);
     }
+
 }

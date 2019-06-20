@@ -2,19 +2,19 @@ package mode;
 
 import java.awt.event.MouseEvent;
 
-import components.AssociationLine;
+import components.CompositionLine;
 import configuration.Configuration.Mode;
 
 /**
  * AssociationLineMode
  */
-public class AssociationLineMode extends LineMode {
+public class CompositionLineMode extends LineMode {
 
-    public AssociationLineMode(Mode m) {
+    public CompositionLineMode(Mode m) {
         super(m);
     }
 
 	public void performActionOnRelease(MouseEvent mouseEvent) { 
-        super.performActionOnRelease(mouseEvent, new AssociationLine());
+        super.performActionOnRelease(mouseEvent, new CompositionLine());
     }
 }

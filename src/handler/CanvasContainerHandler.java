@@ -1,12 +1,14 @@
 package handler;
 
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import components.Line;
 import components.Shape;
 import configuration.Configuration;
 import container.*;
@@ -15,7 +17,8 @@ public class CanvasContainerHandler {
 
     public static CanvasContainer cc;
     public static Vector<Shape> shapes= new Vector<Shape>();
-    
+    public static Vector<Line> lines= new Vector<Line>();
+    public static Map<String, Shape> shapesByName = new HashMap<>();    
     public static void init() {
         initContainer();
     }
@@ -36,11 +39,12 @@ public class CanvasContainerHandler {
 
     public static void registerShapeInCanvas(Shape shape) {
         shapes.add(shape);
+        shapesByName.put(shape.getName(), shape);
     }
 
     public static void setShapeToMostTop(Shape shape) {
-        if (!shape.affiliates.isEmpty()) {
-            for (Shape affiliate : shape.affiliates) {
+        if (!shape.affiliatedShapes.isEmpty()) {
+            for (Shape affiliate : shape.affiliatedShapes) {
                 cc.setComponentZOrder(affiliate, 0);
             }
         }
@@ -54,6 +58,18 @@ public class CanvasContainerHandler {
         Point startLocation = new Point((locationInComponent.x+locationInCanvas.x), (locationInComponent.y+locationInCanvas.y));
         
         return startLocation;
+    }
+
+    public static boolean isMouseActionOnPorts(MouseEvent mouseEvent) {
+        for (Shape s : shapes) {
+            for (Shape affiliate : s.affiliatedShapes) {
+                if (mouseEvent.getSource() == affiliate) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public static boolean isMouseActionOnShape(MouseEvent mouseEvent) {

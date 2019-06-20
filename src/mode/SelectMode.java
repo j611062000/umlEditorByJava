@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
 
+import components.Line;
 import components.Shape;
 import configuration.Configuration;
 import configuration.Configuration.Mode;
@@ -75,6 +76,12 @@ public class SelectMode extends BasicMode {
         }
     }
 
+    private void unHighlightAllLines() {
+        for (Line line : CanvasContainerHandler.lines) {
+            line.setunhighlighted();
+        }
+    }
+
     private void setlatestClickedPointInShape(Point p) {
         this.latestClickedPointInShape = p;
     }
@@ -111,6 +118,20 @@ public class SelectMode extends BasicMode {
         }
 
         this.existingGroups.add(newGroupIndex);
+    }
+
+    private void dissolveAGroup() {
+
+        int indexOfRemovedGroup = 0;
+
+        if (!this.existingGroups.isEmpty()) {
+            for (Shape s : this.selectedShapes) {
+                indexOfRemovedGroup = s.getGroupIndex().get(0);
+                s.getGroupIndex().remove(s.getGroupIndex().size()-1);
+            }
+            this.existingGroups.removeElement(indexOfRemovedGroup);
+        }
+
     }
 
     private Vector<Shape> getClickedShapes(MouseEvent mouseEvent) {
@@ -156,8 +177,19 @@ public class SelectMode extends BasicMode {
         // Set all shapes to unselected status 
         else if (CanvasContainerHandler.isMouseActionOnCanvas(mouseEvent)) {
             this.unHighlightAllShapes();
+            this.unHighlightAllLines();
             this.isLatestClickOnShape = false;
             this.latestClickedPointInCanvas = mouseEvent.getPoint();
+        
+        }else if (CanvasContainerHandler.isMouseActionOnPorts(mouseEvent)) {
+            for (Line line : CanvasContainerHandler.lines) {
+                if (line.getHeadPort() == mouseEvent.getSource() || line.getTailPort() == mouseEvent.getSource()) {
+                    line.setHighlighted();
+                }
+                else {
+                    line.setunhighlighted();
+                }
+            }
         }
     }
 
@@ -178,10 +210,19 @@ public class SelectMode extends BasicMode {
                 // move the clicked shape
                 s.move(xCoordOfClickedShapeInCanvas+shiftX, yCoordOfClickedShapeInCanvas+shiftY);
           
-                // move all the affiliates of the clicked Shape
-                for (Shape affiliate : s.affiliates) {
-                    affiliate.move(affiliate.getLocation().x + shiftX, affiliate.getLocation().y+shiftY);
+                // move all the affiliated shapes of the clicked Shape
+                for (Shape shape : s.affiliatedShapes) {
+                    shape.move(shape.getLocation().x + shiftX, shape.getLocation().y+shiftY);
+
+                    for (Line line : shape.affiliatedLines) {
+                        if (line.getHeadPort() == shape) {
+                            line.updateHeadPort(shape);
+                        } else if (line.getTailPort() == shape) {
+                            line.updateTailPort(shape);
+                        }
+                    }
                 }
+                // move all the affiliated lines of the clicked Shape
             }
         }
     }
