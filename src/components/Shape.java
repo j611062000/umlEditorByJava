@@ -27,12 +27,13 @@ public class Shape extends JPanel{
 
     private Vector<Integer> groupIndex = new Vector<Integer>();
     private static int id              = Configuration.INIT_ID_OF_SHAPE;
-    private String label;
+    private String labelName;
+    private JLabel label;
 
     public Shape(Dimension d, String label) {
         this.issueNewId();
         this.dimensionOfSize = d;
-        this.label = label;
+        this.labelName = label;
        
     }
     
@@ -50,13 +51,13 @@ public class Shape extends JPanel{
         this.setLayout(null);
         this.setLocation(location);
         // Label
-        JLabel jlabel = new JLabel(this.label);
-        jlabel.setVisible(true);
-        this.add(jlabel);
+        this.label = new JLabel(this.labelName);
+        this.label.setVisible(true);
+        this.add(this.label);
         // TODO: refactor
-        jlabel.setSize(Configuration.DIMENSION_OF_LABEL);
-        jlabel.setFont(Configuration.FONT_FOR_TEXT);
-        jlabel.setLocation(30, 10);
+        this.label.setSize(Configuration.DIMENSION_OF_LABEL);
+        this.label.setFont(Configuration.FONT_FOR_TEXT);
+        this.label.setLocation(30, 10);
         this.setVisible(true);
     }
     
@@ -88,6 +89,11 @@ public class Shape extends JPanel{
 
     public ClickedPositionInShape getPosition() {
         return this.position;
+    }
+
+    public void updateLabelName(String newName) {
+        this.label.setText(newName);
+        this.repaint();
     }
 
     public Shape getNearestAffiliate(Point clickedPoint) {

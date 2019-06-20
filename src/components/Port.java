@@ -1,15 +1,12 @@
 package components;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Point;
-
-import javax.swing.JLabel;
-
 import configuration.Configuration;
 import configuration.Configuration.ClickedPositionInShape;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
 import listener.PortListener;
+
 
 /**
  * Port

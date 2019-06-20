@@ -37,7 +37,8 @@ public class CoreHandler {
 
         registerFuncToMenuItem(group,Configuration.MENU_ITME_FUNC_GROUP);
         registerFuncToMenuItem(unGroup,Configuration.MENU_ITME_FUNC_UNGROUP);
-
+        registerPopWindowToMenuItem(changeObjName);
+        
         file.add(group); 
         file.add(unGroup);
         edit.add(changeObjName);  
@@ -48,6 +49,7 @@ public class CoreHandler {
         CanvasContainerHandler.init();
         
         initMainContainer();
+       
         
         containers.add(ButtonContainerHandler.bc);
         containers.add(CanvasContainerHandler.cc);
@@ -56,7 +58,22 @@ public class CoreHandler {
         
         // menu bar
         mc.setJMenuBar(mb);  
+        Font f = new Font("sans-serif", Font.PLAIN, 20);
+        UIManager.put("Menu.font", f);
+        UIManager.put("MenuItem.font", f);
         addPanelsToFrame(containers , mc);
+    }
+
+    private static void registerPopWindowToMenuItem(JMenuItem jmi) {
+        jmi.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                String newName = JOptionPane.showInputDialog(mc,
+                        "What is your name?", null);
+                routePopWindowEventToMode(newName);                
+            }
+        });
+        
     }
 
     private static void registerFuncToMenuItem(JMenuItem jmi, String menuItemFunc) {
@@ -76,6 +93,15 @@ public class CoreHandler {
         modes.add(new CompositionLineMode(Mode.CompositionLine));
         modes.add(new DashLineMode(Mode.DashLine));
         modes.add(new GeneralizationLineMode(Mode.GeneralizationLine));
+    }
+
+    public static void routePopWindowEventToMode(String action) {
+        for (BasicMode m : modes) {
+            if (m.getMode() == currentMode) {
+                m.performActionOnPopWindow(action);
+                break;
+            }
+        }
     }
 
     public static void routeMenuItemEventToMode(String menuItemFunc) {

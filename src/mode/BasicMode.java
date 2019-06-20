@@ -19,6 +19,8 @@ public class BasicMode{
 
 	public void performActionOnMenuItem(String funcOfMenuItem) { }
 
+	public void performActionOnPopWindow(String action) { }
+	
 	protected void setMode(Mode m) {
 		this.mode = m;
 	}
@@ -26,4 +28,5 @@ public class BasicMode{
 	public Mode getMode() {
 		return this.mode;
 	}
+
 }

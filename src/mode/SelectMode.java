@@ -2,6 +2,8 @@ package mode;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Vector;
 
 import components.Line;
@@ -50,18 +52,18 @@ public class SelectMode extends BasicMode {
     }
 
     private void highlightClickedShape(Shape clickedShape) {
+
         for (Shape shape : CanvasContainerHandler.shapes) {
             if (clickedShape.equals(shape)) {
                 CanvasContainerHandler.setShapeToMostTop(shape);
                 shape.performActionWhenClicked();
+                this.selectedShapes.add(shape);
             }
         }
     }
 
     
     private void highlightClickedGroup(Shape clickedShape) {
-        
-        this.selectedShapes.clear();
         
         for (Shape shape : CanvasContainerHandler.shapes) {
             if (this.isThisShapeInAGroup(shape)) {
@@ -72,8 +74,6 @@ public class SelectMode extends BasicMode {
                 }
             }
         }
-
-
     }
 
     private void unHighlightAllShapes() {
@@ -118,7 +118,9 @@ public class SelectMode extends BasicMode {
         Integer newGroupIndex = Configuration.FIRST_NEW_GROUP_INDEX;
         
         if (!this.existingGroups.isEmpty()) {
-            newGroupIndex = this.existingGroups.lastElement() + 1;
+            
+            newGroupIndex = Collections.max(this.existingGroups) + 1;
+            
         }
 
         for (Shape s : this.selectedShapes) {
@@ -126,6 +128,7 @@ public class SelectMode extends BasicMode {
         }
 
         this.existingGroups.add(newGroupIndex);
+        // System.out.println(this.existingGroups);
     }
 
     private void dissolveAGroup() {
@@ -136,11 +139,13 @@ public class SelectMode extends BasicMode {
 
         if (!this.existingGroups.isEmpty()) {
             for (Shape s : this.selectedShapes) {
-                indexOfRemovedGroup = s.getGroupIndex().get(0);
-                s.getGroupIndex().remove(s.getGroupIndex().size()-1);
+                indexOfRemovedGroup = s.getGroupIndex().lastElement();
+                s.getGroupIndex().remove(s.getGroupIndex().lastElement());
             }
             this.existingGroups.removeElement(indexOfRemovedGroup);
+
         }
+        // System.out.println(this.existingGroups);
 
     }
 
@@ -166,6 +171,13 @@ public class SelectMode extends BasicMode {
     }
 
     @Override
+    public void performActionOnPopWindow(String action) {
+        for (Shape shape : this.selectedShapes) {
+            shape.updateLabelName(action);
+        }
+    }
+
+    @Override
     public void performActionOnMenuItem(String funcOfMenuItem) {
         if (funcOfMenuItem == Configuration.MENU_ITME_FUNC_GROUP) {
             this.makeNewGroup();
@@ -180,13 +192,15 @@ public class SelectMode extends BasicMode {
     public void performActionOnPressed(MouseEvent mouseEvent) {
 
         this.setlatestClickedPointInShape(mouseEvent.getPoint());
+        this.selectedShapes.clear();
         
         // Exception will occur when click on a non-shape object
         if (CanvasContainerHandler.isMouseActionOnShape(mouseEvent)) {
+            
             Shape clickedShape = CanvasContainerHandler.getShapeById(mouseEvent.getComponent().getName());
             this.isLatestClickOnShape = true;
-            
             this.unHighlightAllShapes();
+
             if (!isThisShapeInAGroup(clickedShape)) {
                 this.highlightClickedShape(clickedShape);
             } 
@@ -254,7 +268,8 @@ public class SelectMode extends BasicMode {
             this.selectedShapes.clear();
             for (Shape s : CanvasContainerHandler.shapes) {
                 if (this.isShapeInRangeOfTwoPoints(s, this.latestClickedPointInCanvas, mouseEvent.getPoint())) {
-                    this.highlightClickedShape(s);
+                    CanvasContainerHandler.setShapeToMostTop(s);
+                    s.performActionWhenClicked();
                     this.selectedShapes.add(s);
                 }
             }
